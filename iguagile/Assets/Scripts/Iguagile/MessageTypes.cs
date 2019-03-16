@@ -2,9 +2,9 @@
 {
     public enum MessageTypes : byte
     {
-        Trackers,
-        Rpc,
         Open,
         Close,
+        Trackers,
+        Rpc,
     }
 }
