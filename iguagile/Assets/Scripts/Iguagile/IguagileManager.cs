@@ -14,9 +14,9 @@ namespace Iguagile
         public bool ConnectOnStart;
         public bool IsAlive => Client.IsAlive;
 
-        private Dictionary<int, Dictionary<TrackerTypes, IguagileTracker>> players = new Dictionary<int, Dictionary<TrackerTypes, IguagileTracker>>();
+        private Dictionary<string, Dictionary<TrackerTypes, IguagileTracker>> players = new Dictionary<string, Dictionary<TrackerTypes, IguagileTracker>>();
         private Dictionary<string, IguagileBehaviour> rpcMethods = new Dictionary<string, IguagileBehaviour>();
-        private Queue<int> deleteQueue = new Queue<int>();
+        private Queue<string> deleteQueue = new Queue<string>();
 
         void Start()
         {
@@ -59,7 +59,7 @@ namespace Iguagile
             Client.Disconnect();
         }
 
-        public void AppendTracker(int playerId, params IguagileTracker[] trackers)
+        public void AppendTracker(string playerId, params IguagileTracker[] trackers)
         {
             var player = players[playerId];
             foreach (var tracker in trackers)
@@ -68,7 +68,7 @@ namespace Iguagile
             }
         }
 
-        public void AppendPlayer(int playerId, params IguagileTracker[] trackers)
+        public void AppendPlayer(string playerId, params IguagileTracker[] trackers)
         {
             var player = new Dictionary<TrackerTypes, IguagileTracker>();
             foreach (var tracker in trackers)
@@ -78,7 +78,7 @@ namespace Iguagile
             players[playerId] = player;
         }
 
-        public void RemovePlayer(int playerId)
+        public void RemovePlayer(string playerId)
         {
             players.Remove(playerId);
         }
@@ -103,7 +103,7 @@ namespace Iguagile
             Client.Send(data);
         }
 
-        internal void ReceivedTracker(int playerId, byte[] data)
+        internal void ReceivedTracker(string playerId, byte[] data)
         {
             if (!players.ContainsKey(playerId))
             {
@@ -117,7 +117,7 @@ namespace Iguagile
             }
         }
 
-        internal void ReceivedRpcAsync(int playerId, byte[] data)
+        internal void ReceivedRpcAsync(string playerId, byte[] data)
         {
             var objects = LZ4MessagePackSerializer.Deserialize<object[]>(data);
             var methodName = (string)objects[0];
@@ -131,11 +131,11 @@ namespace Iguagile
             monoBehaviour.OnRpc(methodName, args);
         }
 
-        internal void ReceivedOpenMessage(int playerId)
+        internal void ReceivedOpenMessage(string playerId)
         {
         }
 
-        internal void ReceivedCloseMessage(int playerId)
+        internal void ReceivedCloseMessage(string playerId)
         {
             deleteQueue.Enqueue(playerId);
         }

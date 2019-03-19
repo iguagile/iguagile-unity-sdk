@@ -10,12 +10,12 @@ namespace Iguagile
         public IguagileManager Manager;
         public bool IsAlive => Manager.Client.IsAlive;
 
-        public void AppendTrackers(int playerId, params IguagileTracker[] trackers)
+        public void AppendTrackers(string playerId, params IguagileTracker[] trackers)
         {
             Manager.AppendTracker(playerId, trackers);
         }
 
-        public void AppendPlayer(int playerId, params IguagileTracker[] trackers)
+        public void AppendPlayer(string playerId, params IguagileTracker[] trackers)
         {
             Manager.AppendPlayer(playerId, trackers);
         }

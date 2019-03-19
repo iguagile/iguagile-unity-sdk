@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 using WebSocketSharp;
 
@@ -60,7 +61,8 @@ namespace Iguagile
 
         private void WebSocket_OnMessage(object sender, MessageEventArgs e)
         {
-            var playerId = BitConverter.ToInt32(e.RawData, 0);
+            var playerIdByte = e.RawData.Take(16).ToArray();
+            var playerId = Encoding.ASCII.GetString(playerIdByte);
             var messageType = (MessageTypes)e.RawData[4];
             switch (messageType)
             {
