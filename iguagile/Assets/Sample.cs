@@ -39,7 +39,7 @@ public class Sample : IguagileBehaviour
         }
     }
 
-    private void InstantiateObject(int sender, byte[] trackerTypes)
+    private void InstantiateObject(string sender, byte[] trackerTypes)
     {
         var trackers = new Trackers { Id = sender, trackerTypes = trackerTypes };
         rpcQueue.Enqueue(trackers);
@@ -47,7 +47,7 @@ public class Sample : IguagileBehaviour
 
     private class Trackers
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public byte[] trackerTypes { get; set; }
     }
 }
