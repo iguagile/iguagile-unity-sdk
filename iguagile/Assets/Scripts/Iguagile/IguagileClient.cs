@@ -61,17 +61,17 @@ namespace Iguagile
 
         private void WebSocket_OnMessage(object sender, MessageEventArgs e)
         {
-            var playerIdByte = e.RawData.Take(16).ToArray();
-            var playerId = Encoding.ASCII.GetString(playerIdByte);
-            var messageType = (MessageTypes)e.RawData[4];
+            var uuid = e.RawData.Take(16).ToArray();
+            var playerId = Convert.ToBase64String(uuid);
+            var messageType = (MessageTypes)e.RawData[16];
             switch (messageType)
             {
                 case MessageTypes.Trackers:
-                    var trackerData = e.RawData.Skip(5).ToArray();
+                    var trackerData = e.RawData.Skip(17).ToArray();
                     Manager.ReceivedTracker(playerId, trackerData);
                     break;
                 case MessageTypes.Rpc:
-                    var rpcData = e.RawData.Skip(5).ToArray();
+                    var rpcData = e.RawData.Skip(17).ToArray();
                     Manager.ReceivedRpcAsync(playerId, rpcData);
                     break;
                 case MessageTypes.Open:
