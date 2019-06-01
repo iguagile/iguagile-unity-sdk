@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using UnityEngine;
 
 namespace Iguagile
 {
@@ -37,6 +36,7 @@ namespace Iguagile
             {
                 return;
             }
+
             Client.Disconnect();
             Client.Dispose();
             Client = null;
@@ -55,40 +55,38 @@ namespace Iguagile
             }
         }
 
-        private static void ClientReceived(byte[] data)
+        internal static void ClientReceived(byte[] data)
         {
             var uuid = data.Take(16).ToArray();
             var userId = Convert.ToBase64String(uuid);
-            var messageType = (MessageTypes)data[16];
+            var messageType = (MessageTypes) data[16];
             switch (messageType)
             {
-                case MessageTypes.NewConnection:
-                    Debug.Log(messageType);
-                    IguagileManager.AddUser(userId);
-                    break;
-                case MessageTypes.ExitConnection:
-                    Debug.Log(messageType);
-                    IguagileManager.RemoveUser(userId);
-                    break;
                 case MessageTypes.Transform:
                     IguagileManager.UpdateTransform(userId, data.Skip(17).ToArray());
                     break;
                 case MessageTypes.Rpc:
-                    Debug.Log(messageType);
                     IguagileManager.InvokeRpc(userId, data.Skip(17).ToArray());
                     break;
-                default:
-                    Debug.Log(messageType);
+                case MessageTypes.Instantiate:
+                    IguagileManager.Instantiate(userId, data);
+                    break;
+                case MessageTypes.NewConnection:
+                    IguagileManager.AddUser(userId);
+                    break;
+                case MessageTypes.ExitConnection:
+                    IguagileManager.RemoveUser(userId);
                     break;
             }
         }
 
-        public static void Send(byte[] data)
+        internal static void Send(byte[] data)
         {
             if (data.Length >= (1 << 16) - 16)
             {
                 throw new Exception("too long data");
             }
+
             if (data.Length != 0)
             {
                 Client.Send(data);

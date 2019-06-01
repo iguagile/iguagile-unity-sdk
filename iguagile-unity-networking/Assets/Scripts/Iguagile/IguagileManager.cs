@@ -1,15 +1,15 @@
-﻿using System.Collections;
+﻿using MessagePack;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using MessagePack;
-using UnityEngine;
 
 namespace Iguagile
 {
     public class IguagileManager
     {
-        private static Dictionary<string, Dictionary<IguagileTransformTypes, IguagileView>> users = new Dictionary<string, Dictionary<IguagileTransformTypes, IguagileView>>();
+        private static Dictionary<string, Dictionary<IguagileTransformTypes, IguagileView>> users =
+            new Dictionary<string, Dictionary<IguagileTransformTypes, IguagileView>>();
 
         private static Dictionary<string, IguagileBehaviour> behaviours = new Dictionary<string, IguagileBehaviour>();
 
@@ -60,7 +60,13 @@ namespace Iguagile
             users[userId][transformType] = view;
         }
 
-        public static void UpdateTransform(string userId, byte[] data)
+        // TODO Implement Instantiate method
+        public static void Instantiate(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static void UpdateTransform(string userId, byte[] data)
         {
             if (!users.ContainsKey(userId))
             {
@@ -78,7 +84,7 @@ namespace Iguagile
             }
         }
 
-        public static void InvokeRpc(string userId, byte[] data)
+        internal static void InvokeRpc(string userId, byte[] data)
         {
             var objects = LZ4MessagePackSerializer.Deserialize<object[]>(data);
             var methodName = (string) objects[0];
@@ -96,6 +102,12 @@ namespace Iguagile
                 var method = type.GetMethod(methodName, flag);
                 method?.Invoke(behaviour, args);
             }
+        }
+
+        // TODO Implement Instantiate method
+        internal static void Instantiate(string userId, byte[] data)
+        {
+            throw new NotImplementedException();
         }
     }
 }

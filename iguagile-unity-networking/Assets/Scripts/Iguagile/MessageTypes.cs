@@ -4,6 +4,7 @@
     {
         NewConnection,
         ExitConnection,
+        Instantiate,
         Transform,
         Rpc
     }

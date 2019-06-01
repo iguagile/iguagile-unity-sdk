@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Net.WebSockets;
 using System.Threading;
@@ -29,7 +28,7 @@ namespace Iguagile
         {
             Task.Run(async () =>
             {
-                await client.ConnectAsync(new Uri($"ws://{address}:{ port}"), CancellationToken.None);
+                await client.ConnectAsync(new Uri($"ws://{address}:{port}"), CancellationToken.None);
                 Open?.Invoke();
                 var buff = new ArraySegment<byte>(new byte[BufferSize]);
                 while (client.State == WebSocketState.Open)
@@ -62,9 +61,11 @@ namespace Iguagile
         {
             if (IsConnect())
             {
-                client.SendAsync(new ArraySegment<byte>(data), WebSocketMessageType.Binary, true, CancellationToken.None);
+                client.SendAsync(new ArraySegment<byte>(data), WebSocketMessageType.Binary, true,
+                    CancellationToken.None);
             }
         }
+
         public void Dispose()
         {
             client.Dispose();

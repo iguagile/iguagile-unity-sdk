@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using MessagePack;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MessagePack;
 
 namespace Iguagile
 {
@@ -12,7 +8,7 @@ namespace Iguagile
         public static byte[] Serialize(RpcTargets target, MessageTypes messageType, params object[] message)
         {
             var serialized = LZ4MessagePackSerializer.Serialize(message);
-            var data = new byte[] { (byte)target, (byte)messageType };
+            var data = new byte[] {(byte) target, (byte) messageType};
             return data.Concat(serialized).ToArray();
         }
     }

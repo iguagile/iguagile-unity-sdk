@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
 using UnityEngine;
@@ -10,7 +8,9 @@ namespace Iguagile
     [RequireComponent(typeof(IguagileView))]
     public class IguagileTransformView : IguagileBehaviour
     {
-        private static Dictionary<IguagileTransformTypes, IguagileTransformView> syncObjects = new Dictionary<IguagileTransformTypes, IguagileTransformView>();
+        private static Dictionary<IguagileTransformTypes, IguagileTransformView> syncObjects =
+            new Dictionary<IguagileTransformTypes, IguagileTransformView>();
+
         private static Timer timer;
 
         private Queue<IguagileTransform> transformQueue = new Queue<IguagileTransform>();
@@ -20,6 +20,7 @@ namespace Iguagile
         public IguagileTransform Transform { get; private set; }
 
         private bool update;
+
         // Start is called before the first frame update
         void Start()
         {
