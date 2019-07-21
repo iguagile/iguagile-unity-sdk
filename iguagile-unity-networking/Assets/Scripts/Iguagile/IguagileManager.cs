@@ -13,6 +13,9 @@ namespace Iguagile
 
         private static Dictionary<string, IguagileBehaviour> behaviours = new Dictionary<string, IguagileBehaviour>();
 
+        public static int UserId { get; private set; }
+        public static bool IsHost { get; private set; }
+
         public static void AddRpc(IguagileBehaviour behaviour, string methodName)
         {
             behaviours[methodName] = behaviour;
@@ -108,6 +111,34 @@ namespace Iguagile
         internal static void Instantiate(int userId, byte[] data)
         {
             throw new NotImplementedException();
+        }
+
+        // TODO Implement Destroy method
+        internal static void Destroy(int userId, byte[] objectId)
+        {
+            throw new NotImplementedException();
+        }
+
+        // TODO Implement RequestObjectControlAuthority method
+        internal static void RequestObjectControlAuthority(int userId, byte[] objectId)
+        {
+            throw new NotImplementedException();
+        }
+
+        // TODO Implement TransferObjectControlAuthority method
+        internal static void TransferObjectControlAuthority(int userId, byte[] objectId)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static void MigrateHost(int userId, byte[] data)
+        {
+            IsHost = userId == UserId;
+        }
+
+        internal static void Register(int userId, byte[] data)
+        {
+            UserId = userId;
         }
     }
 }

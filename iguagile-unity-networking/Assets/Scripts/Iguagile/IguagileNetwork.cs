@@ -70,11 +70,26 @@ namespace Iguagile
                 case MessageTypes.Instantiate:
                     IguagileManager.Instantiate(id, data);
                     break;
+                case MessageTypes.Destroy:
+                    IguagileManager.Destroy(id, data);
+                    break;
+                case MessageTypes.RequestObjectControlAuthority:
+                    IguagileManager.RequestObjectControlAuthority(id, data);
+                    break;
+                case MessageTypes.TransferObjectControlAuthority:
+                    IguagileManager.TransferObjectControlAuthority(id, data);
+                    break;
                 case MessageTypes.NewConnection:
                     IguagileManager.AddUser(id);
                     break;
                 case MessageTypes.ExitConnection:
                     IguagileManager.RemoveUser(id);
+                    break;
+                case MessageTypes.MigrateHost:
+                    IguagileManager.MigrateHost(id, data);
+                    break;
+                case MessageTypes.Register:
+                    IguagileManager.Register(id, data);
                     break;
             }
         }
