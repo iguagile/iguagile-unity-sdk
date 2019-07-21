@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
@@ -27,7 +28,7 @@ namespace Iguagile
                 while (client.Connected)
                 {
                     stream.Read(messageSize, 0, 2);
-                    var size = messageSize[0] + (messageSize[1] << 8);
+                    var size = BitConverter.ToUInt16(messageSize, 0);
                     var n = stream.Read(buff, 0, size);
                     if (n != size)
                     {
@@ -61,7 +62,7 @@ namespace Iguagile
             if (IsConnect() && (stream?.CanWrite ?? false))
             {
                 var size = data.Length;
-                var message = new byte[] {(byte) (size & 255), (byte) (size >> 8)};
+                var message = BitConverter.GetBytes((ushort)size);
                 message = message.Concat(data).ToArray();
                 stream.Write(message, 0, message.Length);
             }
