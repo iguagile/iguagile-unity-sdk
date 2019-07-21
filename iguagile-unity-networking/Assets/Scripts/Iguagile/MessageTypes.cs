@@ -5,6 +5,11 @@
         NewConnection,
         ExitConnection,
         Instantiate,
+        Destroy,
+        RequestObjectControlAuthority,
+        TransferObjectControlAuthority,
+        MigrateHost,
+        Register,
         Transform,
         Rpc
     }
