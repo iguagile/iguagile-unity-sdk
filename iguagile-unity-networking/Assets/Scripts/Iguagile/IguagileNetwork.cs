@@ -57,25 +57,24 @@ namespace Iguagile
 
         internal static void ClientReceived(byte[] data)
         {
-            var uuid = data.Take(16).ToArray();
-            var userId = Convert.ToBase64String(uuid);
-            var messageType = (MessageTypes) data[16];
+            var id = BitConverter.ToUInt16(data, 0) << 16;
+            var messageType = (MessageTypes) data[3];
             switch (messageType)
             {
                 case MessageTypes.Transform:
-                    IguagileManager.UpdateTransform(userId, data.Skip(17).ToArray());
+                    IguagileManager.UpdateTransform(id, data.Skip(17).ToArray());
                     break;
                 case MessageTypes.Rpc:
-                    IguagileManager.InvokeRpc(userId, data.Skip(17).ToArray());
+                    IguagileManager.InvokeRpc(id, data.Skip(17).ToArray());
                     break;
                 case MessageTypes.Instantiate:
-                    IguagileManager.Instantiate(userId, data);
+                    IguagileManager.Instantiate(id, data);
                     break;
                 case MessageTypes.NewConnection:
-                    IguagileManager.AddUser(userId);
+                    IguagileManager.AddUser(id);
                     break;
                 case MessageTypes.ExitConnection:
-                    IguagileManager.RemoveUser(userId);
+                    IguagileManager.RemoveUser(id);
                     break;
             }
         }

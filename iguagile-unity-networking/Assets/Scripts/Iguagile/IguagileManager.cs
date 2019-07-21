@@ -8,8 +8,8 @@ namespace Iguagile
 {
     public class IguagileManager
     {
-        private static Dictionary<string, Dictionary<IguagileTransformTypes, IguagileView>> users =
-            new Dictionary<string, Dictionary<IguagileTransformTypes, IguagileView>>();
+        private static Dictionary<int, Dictionary<IguagileTransformTypes, IguagileView>> users =
+            new Dictionary<int, Dictionary<IguagileTransformTypes, IguagileView>>();
 
         private static Dictionary<string, IguagileBehaviour> behaviours = new Dictionary<string, IguagileBehaviour>();
 
@@ -40,12 +40,12 @@ namespace Iguagile
             }
         }
 
-        public static void AddUser(string userId)
+        public static void AddUser(int userId)
         {
             users[userId] = new Dictionary<IguagileTransformTypes, IguagileView>();
         }
 
-        public static void RemoveUser(string userId)
+        public static void RemoveUser(int userId)
         {
             foreach (var view in users[userId])
             {
@@ -55,7 +55,7 @@ namespace Iguagile
             users.Remove(userId);
         }
 
-        public static void AddSyncObject(string userId, IguagileView view, IguagileTransformTypes transformType)
+        public static void AddSyncObject(int userId, IguagileView view, IguagileTransformTypes transformType)
         {
             users[userId][transformType] = view;
         }
@@ -66,7 +66,7 @@ namespace Iguagile
             throw new NotImplementedException();
         }
 
-        internal static void UpdateTransform(string userId, byte[] data)
+        internal static void UpdateTransform(int userId, byte[] data)
         {
             if (!users.ContainsKey(userId))
             {
@@ -84,13 +84,13 @@ namespace Iguagile
             }
         }
 
-        internal static void InvokeRpc(string userId, byte[] data)
+        internal static void InvokeRpc(int userId, byte[] data)
         {
             var objects = LZ4MessagePackSerializer.Deserialize<object[]>(data);
             var methodName = (string) objects[0];
             if (behaviours.ContainsKey(methodName))
             {
-                var args = new object[] {userId};
+                var args = new object[0];
                 if (objects.Length > 1)
                 {
                     args = args.Concat(objects.Skip(1)).ToArray();
@@ -105,7 +105,7 @@ namespace Iguagile
         }
 
         // TODO Implement Instantiate method
-        internal static void Instantiate(string userId, byte[] data)
+        internal static void Instantiate(int userId, byte[] data)
         {
             throw new NotImplementedException();
         }
