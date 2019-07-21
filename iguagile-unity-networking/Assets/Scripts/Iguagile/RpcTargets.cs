@@ -5,6 +5,8 @@
         AllClients,
         OtherClients,
         AllClientsBuffered,
-        OtherClientsBuffered
+        OtherClientsBuffered,
+        Host,
+        Server
     }
 }
