@@ -62,34 +62,34 @@ namespace Iguagile
             switch (messageType)
             {
                 case MessageTypes.Transform:
-                    IguagileManager.UpdateTransform(id, data.Skip(17).ToArray());
+                    IguagileRpcInvoker.UpdateTransform(id, data.Skip(17).ToArray());
                     break;
                 case MessageTypes.Rpc:
-                    IguagileManager.InvokeRpc(id, data.Skip(17).ToArray());
+                    IguagileRpcInvoker.InvokeRpc(id, data.Skip(17).ToArray());
                     break;
                 case MessageTypes.Instantiate:
-                    IguagileManager.Instantiate(id, data);
+                    IguagileRpcInvoker.Instantiate(id, data);
                     break;
                 case MessageTypes.Destroy:
-                    IguagileManager.Destroy(id, data);
+                    IguagileRpcInvoker.Destroy(id, data);
                     break;
                 case MessageTypes.RequestObjectControlAuthority:
-                    IguagileManager.RequestObjectControlAuthority(id, data);
+                    IguagileRpcInvoker.RequestObjectControlAuthority(id, data);
                     break;
                 case MessageTypes.TransferObjectControlAuthority:
-                    IguagileManager.TransferObjectControlAuthority(id, data);
+                    IguagileRpcInvoker.TransferObjectControlAuthority(id, data);
                     break;
                 case MessageTypes.NewConnection:
-                    IguagileManager.AddUser(id);
+                    IguagileRpcInvoker.AddUser(id);
                     break;
                 case MessageTypes.ExitConnection:
-                    IguagileManager.RemoveUser(id);
+                    IguagileRpcInvoker.RemoveUser(id);
                     break;
                 case MessageTypes.MigrateHost:
-                    IguagileManager.MigrateHost(id, data);
+                    IguagileRpcInvoker.MigrateHost();
                     break;
                 case MessageTypes.Register:
-                    IguagileManager.Register(id, data);
+                    IguagileRpcInvoker.Register(id);
                     break;
             }
         }
