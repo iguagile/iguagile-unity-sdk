@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Iguagile
@@ -7,6 +8,8 @@ namespace Iguagile
     {
         private static Dictionary<int, IguagileView> _syncObjects = new Dictionary<int, IguagileView>();
         private static Dictionary<int, IguagileView> _mySyncObjects = new Dictionary<int, IguagileView>();
+
+        internal static IguagileTransform[] SyncTransforms { get; private set; } = new IguagileTransform[0];
         
         internal static void Instantiate(int userId, int objectId, string name)
         {
@@ -19,6 +22,12 @@ namespace Iguagile
             var obj = Object.Instantiate(prefab);
             var view = obj.GetComponent<IguagileView>();
             _syncObjects.Add(objectId, view);
+
+            if (userId == IguagileUserManager.UserId)
+            {
+                _mySyncObjects.Add(objectId, view);
+                UpdateSyncObjects();
+            }
         }
 
         internal static void Destroy(int objectId)
@@ -30,6 +39,12 @@ namespace Iguagile
 
             var view = _syncObjects[objectId];
             _syncObjects.Remove(objectId);
+
+            if (_mySyncObjects.ContainsKey(objectId))
+            {
+                _mySyncObjects.Remove(objectId);
+            }
+
             Object.Destroy(view.gameObject);
         }
 
@@ -43,6 +58,12 @@ namespace Iguagile
             var view = _syncObjects[objectId];
             view.IsMine = true;
             _mySyncObjects.Add(objectId, view);
+            UpdateSyncObjects();
+        }
+
+        internal static void UpdateSyncObjects()
+        {
+            SyncTransforms = _mySyncObjects.Select(x => x.Value.TransformView.Transform).ToArray();
         }
 
         internal static IguagileView GetView(int objectId)
