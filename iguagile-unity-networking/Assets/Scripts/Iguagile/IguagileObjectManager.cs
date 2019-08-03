@@ -21,7 +21,7 @@ namespace Iguagile
             _syncObjects.Add(objectId, view);
         }
 
-        internal static void Destroy(int userId, int objectId)
+        internal static void Destroy(int objectId)
         {
             if (!_syncObjects.ContainsKey(objectId))
             {
@@ -57,8 +57,13 @@ namespace Iguagile
         
         internal static void Clear()
         {
-            _syncObjects.Clear();
             _mySyncObjects.Clear();
+            foreach (var syncObject in _syncObjects)
+            {
+                Destroy(syncObject.Key);
+            }
+
+            _syncObjects.Clear();
         }
     }
 }

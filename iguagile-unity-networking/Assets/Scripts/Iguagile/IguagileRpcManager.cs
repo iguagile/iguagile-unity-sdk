@@ -7,20 +7,13 @@ namespace Iguagile
     {
         private static Dictionary<string, IguagileBehaviour> _rpcMethods = new Dictionary<string, IguagileBehaviour>();
 
-        public static void AddRpc(string methodName, IguagileBehaviour receiver)
+
+        internal static void AddRpc(string methodName, IguagileBehaviour receiver)
         {
             _rpcMethods.Add(methodName, receiver);
         }
-
-        public static void RemoveRpc(string methodName)
-        {
-            if (_rpcMethods.ContainsKey(methodName))
-            {
-                _rpcMethods.Remove(methodName);
-            }
-        }
-
-        public static void RemoveRpc(IguagileBehaviour receiver)
+        
+        internal static void RemoveRpc(IguagileBehaviour receiver)
         {
             var removeList = new List<string>();
             foreach (var rpcMethod in _rpcMethods)

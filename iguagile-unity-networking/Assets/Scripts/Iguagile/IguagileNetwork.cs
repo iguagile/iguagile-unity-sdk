@@ -12,6 +12,12 @@ namespace Iguagile
 
         public static bool IsConnect => Client?.IsConnect() ?? false;
 
+        /// <summary>
+        /// Connect to a server.
+        /// </summary>
+        /// <param name="address">The address of the server to connect to.</param>
+        /// <param name="port">The port number of the server to connect to.</param>
+        /// <param name="protocol">transport layer protocol</param>
         public static void Connect(string address, int port, Protocol protocol)
         {
             if (Client == null)
@@ -30,6 +36,9 @@ namespace Iguagile
             Client.Connect(address, port);
         }
 
+        /// <summary>
+        /// Close the connection and dispose the client.
+        /// </summary>
         public static void Disconnect()
         {
             if (Client == null)
@@ -40,6 +49,9 @@ namespace Iguagile
             Client.Disconnect();
             Client.Dispose();
             Client = null;
+            IguagileObjectManager.Clear();
+            IguagileRpcManager.Clear();
+            IguagileUserManager.Clear();
         }
 
         private static IIguagileClient NewClient(Protocol protocol)

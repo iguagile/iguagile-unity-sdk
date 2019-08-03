@@ -28,7 +28,7 @@ namespace Iguagile
         internal static void Destroy(int userId, byte[] data)
         {
             var objectId = (int)LZ4MessagePackSerializer.Deserialize<object[]>(data)[0];
-            IguagileObjectManager.Destroy(userId, objectId);
+            IguagileObjectManager.Destroy(objectId);
         }
 
         internal static void RequestObjectControlAuthority(int userId, byte[] data)
