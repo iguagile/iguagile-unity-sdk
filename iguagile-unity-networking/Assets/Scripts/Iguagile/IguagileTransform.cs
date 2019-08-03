@@ -6,20 +6,20 @@ namespace Iguagile
     {
         public Vector3 Position { get; set; }
         public Quaternion Rotation { get; set; }
-        public IguagileTransformTypes TransformType { get; set; }
+        public int ObjectId { get; set; }
 
-        public IguagileTransform(Vector3 position, Quaternion rotation, IguagileTransformTypes transformType)
+        public IguagileTransform(Vector3 position, Quaternion rotation, int objectId)
         {
             Position = position;
             Rotation = rotation;
-            TransformType = transformType;
+            ObjectId = objectId;
         }
 
-        public IguagileTransform(Transform transform, IguagileTransformTypes transformType)
+        public IguagileTransform(Transform transform, int objectId)
         {
             Position = transform.position;
             Rotation = transform.rotation;
-            TransformType = transformType;
+            ObjectId = objectId;
         }
     }
 }

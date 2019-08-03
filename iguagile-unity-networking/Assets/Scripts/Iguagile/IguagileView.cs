@@ -4,6 +4,7 @@
     {
         public IguagileTransformView TransformView;
         public bool IsMine { get; internal set; }
+        public int ObjectId { get; internal set; }
 
         private bool disconnected;
 

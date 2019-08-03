@@ -1,11 +1,13 @@
-﻿using MessagePack;
+﻿using System;
+using System.Linq;
+using MessagePack;
 using UnityEngine;
 
 namespace Iguagile
 {
     public static class IguagileTransformSerializer
     {
-        private const int DataLength = 8;
+        private const int DataLength = 11;
 
         public static byte[] Serialize(params IguagileTransform[] transforms)
         {
@@ -27,14 +29,18 @@ namespace Iguagile
             for (var i = 0; i < length; i++)
             {
                 var j = i * DataLength;
-                objects[j + 1] = (byte) transforms[i].TransformType;
-                objects[j + 2] = transforms[i].Position.x;
-                objects[j + 3] = transforms[i].Position.y;
-                objects[j + 4] = transforms[i].Position.z;
-                objects[j + 5] = transforms[i].Rotation.x;
-                objects[j + 6] = transforms[i].Rotation.y;
-                objects[j + 7] = transforms[i].Rotation.z;
-                objects[j + 8] = transforms[i].Rotation.w;
+                var idByte = BitConverter.GetBytes(transforms[i].ObjectId);
+                objects[j + 1] = idByte[0];
+                objects[j + 2] = idByte[1];
+                objects[j + 3] = idByte[2];
+                objects[j + 4] = idByte[3];
+                objects[j + 5] = transforms[i].Position.x;
+                objects[j + 6] = transforms[i].Position.y;
+                objects[j + 7] = transforms[i].Position.z;
+                objects[j + 8] = transforms[i].Rotation.x;
+                objects[j + 9] = transforms[i].Rotation.y;
+                objects[j + 10] = transforms[i].Rotation.z;
+                objects[j + 11] = transforms[i].Rotation.w;
             }
 
             return objects;
@@ -47,19 +53,20 @@ namespace Iguagile
             for (var i = 0; i < length; i++)
             {
                 var j = i * DataLength;
-                var transformType = (byte) objects[j + 1];
+                var idByte = objects.Skip(j + 1).Take(4).Select(x => (byte) x).ToArray();
+                var objectId = BitConverter.ToInt32(idByte, 0);
                 var position = new Vector3(
-                    (float) objects[j + 2],
-                    (float) objects[j + 3],
-                    (float) objects[j + 4]
-                );
-                var rotation = new Quaternion(
                     (float) objects[j + 5],
                     (float) objects[j + 6],
-                    (float) objects[j + 7],
-                    (float) objects[j + 8]
+                    (float) objects[j + 7]
                 );
-                transforms[i] = new IguagileTransform(position, rotation, (IguagileTransformTypes) transformType);
+                var rotation = new Quaternion(
+                    (float) objects[j + 8],
+                    (float) objects[j + 9],
+                    (float) objects[j + 10],
+                    (float) objects[j + 11]
+                );
+                transforms[i] = new IguagileTransform(position, rotation, objectId);
             }
 
             return transforms;

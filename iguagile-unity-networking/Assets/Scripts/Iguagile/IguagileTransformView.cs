@@ -26,7 +26,7 @@ namespace Iguagile
         {
             view = GetComponent<IguagileView>();
             view.TransformView = this;
-            Transform = new IguagileTransform(transform, TransformType);
+            Transform = new IguagileTransform(transform, view.ObjectId);
         }
 
         // Update is called once per frame
