@@ -6,6 +6,10 @@ namespace Iguagile
 {
     public class IguagileBehaviour : MonoBehaviour
     {
+
+        /// <summary>
+        /// Initialization method to register rpc methods.
+        /// </summary>
         public void RegisterRpcMethods()
         {
             foreach (var info in typeof(IguagileBehaviour).GetMethods())
@@ -23,11 +27,18 @@ namespace Iguagile
             }
         }
 
+
         public void UnregisterRpcMethods()
         {
             IguagileRpcManager.RemoveRpc(this);
         }
-
+        
+        /// <summary>
+        /// Call RPC method via the server.
+        /// </summary>
+        /// <param name="methodName">RPC method name.</param>
+        /// <param name="target">RPC target.</param>
+        /// <param name="args">RPC method arguments</param>
         public static void Rpc(string methodName, RpcTargets target, params object[] args)
         {
             var objects = new object[] {methodName};
@@ -36,6 +47,11 @@ namespace Iguagile
             IguagileNetwork.Send(data);
         }
 
+        /// <summary>
+        /// Call RPC method via the server.
+        /// </summary>
+        /// <param name="methodName">RPC method name.</param>
+        /// <param name="target">RPC target.</param>
         public static void Rpc(string methodName, RpcTargets target)
         {
             var data = MessageSerializer.Serialize(target, MessageTypes.Rpc, methodName);
