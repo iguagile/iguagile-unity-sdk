@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Iguagile
 {
-    public class IguagileTCPClient : IIguagileClient
+    internal class IguagileTCPClient : IIguagileClient
     {
         private const int BufferSize = 1024;
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Iguagile
 {
-    public class IguagileWebSocketClient : IIguagileClient
+    internal class IguagileWebSocketClient : IIguagileClient
     {
         private ClientWebSocket client;
 
