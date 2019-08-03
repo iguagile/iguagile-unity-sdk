@@ -20,8 +20,7 @@ namespace Iguagile
         public IguagileTransform Transform { get; private set; }
 
         private bool update;
-
-        // Start is called before the first frame update
+        
         void Start()
         {
             view = GetComponent<IguagileView>();
@@ -29,7 +28,6 @@ namespace Iguagile
             Transform = new IguagileTransform(transform, view.ObjectId);
         }
 
-        // Update is called once per frame
         void Update()
         {
             if (view.IsMine)
