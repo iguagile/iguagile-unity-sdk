@@ -1,13 +1,31 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using UnityEngine;
 
 namespace Iguagile
 {
     public class IguagileBehaviour : MonoBehaviour
     {
-        void OnDestroy()
+        public void RegisterRpcMethods()
         {
-            IguagileManager.RemoveRpc(this);
+            foreach (var info in typeof(IguagileBehaviour).GetMethods())
+            {
+                var attributes = Attribute.GetCustomAttributes(info, typeof(IguagileRpcAttribute));
+                foreach (var attribute in attributes)
+                {
+                    var attr = attribute as IguagileRpcAttribute;
+                    if (attr != null)
+                    {
+                        IguagileRpcManager.AddRpc(info.Name, this);
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void UnregisterRpcMethods()
+        {
+            IguagileRpcManager.RemoveRpc(this);
         }
 
         public static void Rpc(string methodName, RpcTargets target, params object[] args)

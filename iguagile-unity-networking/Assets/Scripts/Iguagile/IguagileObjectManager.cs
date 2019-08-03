@@ -8,12 +8,6 @@ namespace Iguagile
         private static Dictionary<int, IguagileView> _syncObjects = new Dictionary<int, IguagileView>();
         private static Dictionary<int, IguagileView> _mySyncObjects = new Dictionary<int, IguagileView>();
         
-        internal static void Clear()
-        {
-            _syncObjects.Clear();
-            _mySyncObjects.Clear();
-        }
-
         internal static void Instantiate(int userId, int objectId, string name)
         {
             var prefab = Resources.Load(name, typeof(GameObject)) as GameObject;
@@ -59,6 +53,12 @@ namespace Iguagile
             }
 
             return _syncObjects[objectId];
+        }
+        
+        internal static void Clear()
+        {
+            _syncObjects.Clear();
+            _mySyncObjects.Clear();
         }
     }
 }
