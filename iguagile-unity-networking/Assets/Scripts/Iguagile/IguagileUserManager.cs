@@ -6,8 +6,8 @@ namespace Iguagile
     {
         private static Dictionary<int, IguagileUser> _users = new Dictionary<int, IguagileUser>();
 
-        private static int _userId;
-        private static bool _isHost;
+        public static int UserId { get; private set; }
+        public static bool IsHost { get; private set; }
         
         internal static void AddUser(int userId)
         {
@@ -24,12 +24,12 @@ namespace Iguagile
 
         internal static void MigrateHost()
         {
-            _isHost = true;
+            IsHost = true;
         }
 
         internal static void Register(int id)
         {
-            _userId = id;
+            UserId = id;
         }
 
         internal static void Clear()
