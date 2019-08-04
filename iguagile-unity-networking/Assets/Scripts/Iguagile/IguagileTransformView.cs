@@ -8,72 +8,40 @@ namespace Iguagile
     [RequireComponent(typeof(IguagileView))]
     public class IguagileTransformView : IguagileBehaviour
     {
-        private static Dictionary<IguagileTransformTypes, IguagileTransformView> syncObjects =
-            new Dictionary<IguagileTransformTypes, IguagileTransformView>();
+        internal IguagileTransform NextTransform { get; private set; }
 
-        private static Timer timer;
-
-        private Queue<IguagileTransform> transformQueue = new Queue<IguagileTransform>();
-        private IguagileView view;
-
-        public IguagileTransformTypes TransformType;
-        public IguagileTransform Transform { get; private set; }
-
-        private bool update;
+        private IguagileView _view;
+        private bool _update;
         
         void Start()
         {
-            view = GetComponent<IguagileView>();
-            view.TransformView = this;
-            Transform = new IguagileTransform(transform, view.ObjectId);
+            _view = GetComponent<IguagileView>();
+            _view.TransformView = this;
+            NextTransform = new IguagileTransform(transform, _view.ObjectId);
         }
 
         void Update()
         {
-            if (view.IsMine)
+            if (_view.IsMine)
             {
-                Transform.Position = transform.position;
-                Transform.Rotation = transform.rotation;
+                NextTransform.Position = transform.position;
+                NextTransform.Rotation = transform.rotation;
             }
             else
             {
-                while (transformQueue.Count > 0)
+                if (_update)
                 {
-                    var iguagileTransform = transformQueue.Dequeue();
-                    transform.position = iguagileTransform.Position;
-                    transform.rotation = iguagileTransform.Rotation;
+                    transform.position = NextTransform.Position;
+                    transform.rotation = NextTransform.Rotation;
+                    _update = false;
                 }
             }
         }
 
         public void UpdateTransform(IguagileTransform iguagileTransform)
         {
-            transformQueue.Enqueue(iguagileTransform);
-        }
-
-        public static void AddSycnObject(IguagileTransformView syncObject)
-        {
-            syncObjects[syncObject.TransformType] = syncObject;
-        }
-
-        public static void SyncStart(double interval)
-        {
-            timer = new Timer(interval);
-            timer.Elapsed += Timer_Elapsed;
-            timer.Start();
-        }
-
-        public static void SyncStop()
-        {
-            timer.Stop();
-            timer.Dispose();
-        }
-
-        private static void Timer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            var transforms = syncObjects.Select(x => x.Value.Transform).ToArray();
-            var data = IguagileTransformSerializer.Serialize(transforms);
-            IguagileNetwork.Send(data);
+            NextTransform = iguagileTransform;
+            _update = true;
         }
     }
 }

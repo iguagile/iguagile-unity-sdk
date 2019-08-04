@@ -1,11 +1,29 @@
 ﻿using System;
-using System.Linq;
 using UnityEngine;
 
 namespace Iguagile
 {
+    [RequireComponent(typeof(IguagileView))]
     public class IguagileBehaviour : MonoBehaviour
     {
+        private IguagileView _view;
+
+        public IguagileView View
+        {
+            get
+            {
+                if (_view == null)
+                {
+                    _view = GetComponent<IguagileView>();
+                }
+
+                return _view;
+            }
+        }
+
+        public int ObjectId => View?.ObjectId ?? 0;
+
+        public bool IsMine => View?.IsMine ?? false;
 
         /// <summary>
         /// Initialization method to register rpc methods.
@@ -17,8 +35,7 @@ namespace Iguagile
                 var attributes = Attribute.GetCustomAttributes(info, typeof(IguagileRpcAttribute));
                 foreach (var attribute in attributes)
                 {
-                    var attr = attribute as IguagileRpcAttribute;
-                    if (attr != null)
+                    if (attribute is IguagileRpcAttribute)
                     {
                         IguagileRpcManager.AddRpc(info.Name, this);
                         break;
@@ -26,7 +43,6 @@ namespace Iguagile
                 }
             }
         }
-
 
         public void UnregisterRpcMethods()
         {
@@ -39,12 +55,9 @@ namespace Iguagile
         /// <param name="methodName">RPC method name.</param>
         /// <param name="target">RPC target.</param>
         /// <param name="args">RPC method arguments</param>
-        public static void Rpc(string methodName, RpcTargets target, params object[] args)
+        public void Rpc(string methodName, RpcTargets target, params object[] args)
         {
-            var objects = new object[] {methodName};
-            objects = objects.Concat(args).ToArray();
-            var data = MessageSerializer.Serialize(target, MessageTypes.Rpc, objects);
-            IguagileNetwork.Send(data);
+            IguagileRpcManager.Rpc(methodName, target, args);
         }
 
         /// <summary>
@@ -52,10 +65,14 @@ namespace Iguagile
         /// </summary>
         /// <param name="methodName">RPC method name.</param>
         /// <param name="target">RPC target.</param>
-        public static void Rpc(string methodName, RpcTargets target)
+        public void Rpc(string methodName, RpcTargets target)
         {
-            var data = MessageSerializer.Serialize(target, MessageTypes.Rpc, methodName);
-            IguagileNetwork.Send(data);
+            IguagileRpcManager.Rpc(methodName, target);
+        }
+
+        public void TransferObjectControlAuthority()
+        {
+            IguagileObjectManager.TransferObjectControlAuthority(ObjectId);
         }
     }
 }

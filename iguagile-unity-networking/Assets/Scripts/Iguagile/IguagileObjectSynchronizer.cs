@@ -31,5 +31,14 @@ namespace Iguagile
             var data = MessageSerializer.Serialize(RpcTargets.OtherClients, MessageTypes.Transform, serialized);
             IguagileNetwork.Send(data);
         }
+
+        internal static void UpdateTransform(IguagileTransform[] transforms)
+        {
+            foreach (var transform in transforms)
+            {
+                var view = IguagileObjectManager.GetView(transform.ObjectId);
+                view?.TransformView.UpdateTransform(transform);
+            }
+        }
     }
 }
