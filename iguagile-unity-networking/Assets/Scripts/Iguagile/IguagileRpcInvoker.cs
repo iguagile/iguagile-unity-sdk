@@ -1,5 +1,7 @@
-﻿using MessagePack;
+﻿using System;
+using MessagePack;
 using System.Linq;
+using System.Text;
 
 namespace Iguagile
 {
@@ -7,6 +9,9 @@ namespace Iguagile
     {
         internal static void UpdateTransform(int userId, byte[] data)
         {
+            var serialized = (byte[])LZ4MessagePackSerializer.Deserialize<object[]>(data)[0];
+            var transforms = IguagileTransformSerializer.Deserialize(serialized);
+            IguagileObjectSynchronizer.UpdateTransform(transforms);
         }
 
         internal static void InvokeRpc(int userId, byte[] data)
@@ -19,15 +24,14 @@ namespace Iguagile
 
         internal static void Instantiate(int userId, byte[] data)
         {
-            var objects = LZ4MessagePackSerializer.Deserialize<object[]>(data);
-            var objectId = (int)objects[0];
-            var name = (string)objects[1];
+            var objectId = BitConverter.ToInt32(data, 0);
+            var name = Encoding.UTF8.GetString(data, 4, data.Length - 4);
             IguagileObjectManager.Instantiate(userId, objectId, name);
         }
 
         internal static void Destroy(int userId, byte[] data)
         {
-            var objectId = (int)LZ4MessagePackSerializer.Deserialize<object[]>(data)[0];
+            var objectId = BitConverter.ToInt32(data, 0);
             IguagileObjectManager.Destroy(objectId);
         }
 
@@ -39,7 +43,7 @@ namespace Iguagile
         internal static void TransferObjectControlAuthority(int userId, byte[] data)
         {
             var objectId = (int)LZ4MessagePackSerializer.Deserialize<object[]>(data)[0];
-            IguagileObjectManager.TransferObjectControlAuthority(objectId);
+            IguagileObjectManager.ReceiveObjectControlAuthority(objectId);
         }
 
         internal static void AddUser(int userId)
