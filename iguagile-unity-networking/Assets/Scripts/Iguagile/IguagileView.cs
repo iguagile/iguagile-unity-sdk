@@ -1,4 +1,7 @@
-﻿namespace Iguagile
+﻿using System;
+using System.Linq;
+
+namespace Iguagile
 {
     public class IguagileView : IguagileBehaviour
     {
@@ -9,6 +12,13 @@
         public void UpdateTransform(IguagileTransform iguagileTransform)
         {
             TransformView.UpdateTransform(iguagileTransform);
+        }
+
+        void OnDestroy()
+        {
+            var data = new byte[] {(byte) RpcTargets.Server, (byte) MessageTypes.Destroy};
+            data = data.Concat(BitConverter.GetBytes(ObjectId)).ToArray();
+            IguagileNetwork.Send(data);
         }
     }
 }
