@@ -1,4 +1,6 @@
-﻿using System.Timers;
+﻿using System.Diagnostics;
+using System.Linq;
+using System.Timers;
 
 namespace Iguagile
 {
@@ -15,20 +17,19 @@ namespace Iguagile
             _timer.Elapsed += TimerElapsed;
         }
 
-        public void SyncStart()
+        public static void SyncStart()
         {
             _timer.Start();
         }
 
-        public void SyncStop()
+        public static void SyncStop()
         {
             _timer.Stop();
         }
 
         private static void TimerElapsed(object sender, ElapsedEventArgs e)
         {
-            var serialized = IguagileTransformSerializer.Serialize(IguagileObjectManager.SyncTransforms);
-            var data = MessageSerializer.Serialize(RpcTargets.OtherClients, MessageTypes.Transform, serialized);
+            var data = IguagileTransformSerializer.Serialize(IguagileObjectManager.SyncTransforms);
             IguagileNetwork.Send(data);
         }
 
