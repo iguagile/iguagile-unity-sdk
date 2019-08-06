@@ -33,10 +33,10 @@ namespace Iguagile
 
                     if (_nextTryId >= _maxSize)
                     {
-                        _nextTryId = _maxSize;
+                        _nextTryId = 0;
                     }
 
-                    if (IsAllocated(_nextTryId))
+                    if (!IsAllocated(_nextTryId))
                     {
                         var id = _nextTryId;
                         Allocate(id);
