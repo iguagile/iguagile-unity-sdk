@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Iguagile
 {
-    public class IguagileRpc : MonoBehaviour
+    public class IguagileRpc
     {
         internal static void UpdateTransform(int userId, byte[] data)
         {
