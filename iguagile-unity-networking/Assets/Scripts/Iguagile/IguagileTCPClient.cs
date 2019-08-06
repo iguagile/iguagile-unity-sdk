@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -22,20 +24,21 @@ namespace Iguagile
             Open?.Invoke();
             stream = client.GetStream();
             var messageSize = new byte[2];
-            var buff = new byte[BufferSize];
             Task.Run(() =>
             {
                 while (client.Connected)
                 {
                     stream.Read(messageSize, 0, 2);
                     var size = BitConverter.ToUInt16(messageSize, 0);
-                    var n = stream.Read(buff, 0, size);
-                    if (n != size)
+                    var readSum = 0;
+                    var buf = new byte[size];
+                    var message = new byte[0];
+                    while (readSum < size)
                     {
-                        break;
+                        readSum += stream.Read(buf, 0, size);
+                        message = message.Concat(buf).ToArray();
                     }
-
-                    Received?.Invoke(buff.Take(size).ToArray());
+                    Received?.Invoke(message);
                 }
 
                 client.Dispose();
