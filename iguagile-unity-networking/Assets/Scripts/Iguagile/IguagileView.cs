@@ -14,16 +14,5 @@ namespace Iguagile
         {
             TransformView.UpdateTransform(iguagileTransform);
         }
-
-        void OnDestroy()
-        {
-            if (!IsMine || ObjectId < 0)
-            {
-                return;
-            }
-            var data = new byte[] {(byte) RpcTargets.Server, (byte) MessageTypes.Destroy};
-            data = data.Concat(BitConverter.GetBytes(ObjectId)).ToArray();
-            IguagileNetwork.Send(data);
-        }
     }
 }
