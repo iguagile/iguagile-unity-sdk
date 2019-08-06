@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Timers;
-using UnityEngine;
-
-namespace Iguagile
+﻿namespace Iguagile
 {
     public class IguagileTransformView : IguagileBehaviour
     {
