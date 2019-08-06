@@ -52,6 +52,8 @@ namespace Iguagile
 
             if (userId == IguagileUserManager.UserId)
             {
+                view.IsMine = true;
+                view.TransformView.NextTransform = new IguagileTransform(view.transform, objectId);
                 _mySyncObjects.Add(objectId, view);
                 UpdateSyncObjects();
             }
