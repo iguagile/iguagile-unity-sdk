@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using UnityEngine;
 
 namespace Iguagile
 {
@@ -30,10 +31,16 @@ namespace Iguagile
                 throw new Exception("Already connected");
             }
 
+            var obj = new GameObject();
+            var dispatcher = obj.AddComponent<IguagileDispatcher>();
+            GameObject.DontDestroyOnLoad(obj);
+            IguagileDispatcher.Dispatcher = dispatcher;
+
             Client.Open += Open;
             Client.Close += Close;
             Client.Received += ClientReceived;
             Client.Connect(address, port);
+            IguagileObjectSynchronizer.SyncStart();
         }
 
         /// <summary>
@@ -46,6 +53,7 @@ namespace Iguagile
                 return;
             }
 
+            IguagileObjectSynchronizer.SyncStop();
             Client.Disconnect();
             Client.Dispose();
             Client = null;
@@ -67,41 +75,43 @@ namespace Iguagile
             }
         }
 
+        private const int HeaderSize = 3;
+
         internal static void ClientReceived(byte[] data)
         {
             var id = BitConverter.ToUInt16(data, 0) << 16;
-            var messageType = (MessageTypes) data[3];
+            var messageType = (MessageTypes) data[2];
             switch (messageType)
             {
                 case MessageTypes.Transform:
-                    IguagileRpcInvoker.UpdateTransform(id, data.Skip(17).ToArray());
+                    IguagileRpc.UpdateTransform(id, data.Skip(HeaderSize).ToArray());
                     break;
                 case MessageTypes.Rpc:
-                    IguagileRpcInvoker.InvokeRpc(id, data.Skip(17).ToArray());
+                    IguagileRpc.InvokeRpc(id, data.Skip(HeaderSize).ToArray());
                     break;
                 case MessageTypes.Instantiate:
-                    IguagileRpcInvoker.Instantiate(id, data);
+                    IguagileRpc.Instantiate(id, data.Skip(HeaderSize).ToArray());
                     break;
                 case MessageTypes.Destroy:
-                    IguagileRpcInvoker.Destroy(id, data);
+                    IguagileRpc.Destroy(id, data.Skip(3).ToArray());
                     break;
                 case MessageTypes.RequestObjectControlAuthority:
-                    IguagileRpcInvoker.RequestObjectControlAuthority(id, data);
+                    IguagileRpc.RequestObjectControlAuthority(id, data.Skip(HeaderSize).ToArray());
                     break;
                 case MessageTypes.TransferObjectControlAuthority:
-                    IguagileRpcInvoker.TransferObjectControlAuthority(id, data);
+                    IguagileRpc.TransferObjectControlAuthority(id, data.Skip(HeaderSize).ToArray());
                     break;
                 case MessageTypes.NewConnection:
-                    IguagileRpcInvoker.AddUser(id);
+                    IguagileRpc.AddUser(id);
                     break;
                 case MessageTypes.ExitConnection:
-                    IguagileRpcInvoker.RemoveUser(id);
+                    IguagileRpc.RemoveUser(id);
                     break;
                 case MessageTypes.MigrateHost:
-                    IguagileRpcInvoker.MigrateHost();
+                    IguagileRpc.MigrateHost();
                     break;
                 case MessageTypes.Register:
-                    IguagileRpcInvoker.Register(id);
+                    IguagileRpc.Register(id);
                     break;
             }
         }
