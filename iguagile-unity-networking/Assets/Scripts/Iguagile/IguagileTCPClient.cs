@@ -9,8 +9,6 @@ namespace Iguagile
 {
     internal class IguagileTCPClient : IIguagileClient
     {
-        private const int BufferSize = 1024;
-
         private TcpClient client;
         private NetworkStream stream;
 
