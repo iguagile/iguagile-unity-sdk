@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using UnityEngine;
 
 namespace Iguagile
@@ -21,16 +22,20 @@ namespace Iguagile
             }
         }
 
-        public int ObjectId => View?.ObjectId ?? 0;
+        public int ObjectId => View.ObjectId;
 
-        public bool IsMine => View?.IsMine ?? false;
+        public bool IsMine => View.IsMine;
 
         /// <summary>
         /// Initialization method to register rpc methods.
         /// </summary>
         public void RegisterRpcMethods()
         {
-            foreach (var info in typeof(IguagileBehaviour).GetMethods())
+            foreach (var info in GetType().GetMethods(BindingFlags.Instance |
+                                                      BindingFlags.Public |
+                                                      BindingFlags.NonPublic |
+                                                      BindingFlags.DeclaredOnly
+            ))
             {
                 var attributes = Attribute.GetCustomAttributes(info, typeof(IguagileRpcAttribute));
                 foreach (var attribute in attributes)
