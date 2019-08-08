@@ -24,7 +24,7 @@ namespace Iguagile
             var idByte = BitConverter.GetBytes(id);
             var nameByte = Encoding.UTF8.GetBytes(name);
             var data = new byte[] {(byte) RpcTargets.Server, (byte) MessageTypes.Instantiate};
-            data = data.Concat(idByte).Concat(nameByte).ToArray();
+            data = data.Concat(idByte).Concat(new byte[]{(byte)ObjectLifetime.OwnerExist}).Concat(nameByte).ToArray();
             IguagileNetwork.Send(data);
         }
         
