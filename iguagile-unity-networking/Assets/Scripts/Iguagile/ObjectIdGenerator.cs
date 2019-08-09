@@ -1,18 +1,18 @@
-﻿namespace Iguagile
+﻿using System.Collections;
+
+namespace Iguagile
 {
     internal class ObjectIdGenerator
     {
         private readonly object _idLock = new object();
-        private byte[] _allocatedId;
+        private BitArray _allocatedId;
         private int _nextTryId;
         private int _allocatedIdCount;
         private int _maxSize;
-
-        private const int bits = 8;
-
+        
         public ObjectIdGenerator(int maxSize)
         {
-            _allocatedId = new byte[maxSize / 8 + 1];
+            _allocatedId = new BitArray(maxSize);
             _maxSize = maxSize;
         }
 
@@ -54,12 +54,7 @@
 
             lock (_idLock)
             {
-                var index = id / bits;
-                var b = _allocatedId[index];
-                var shift = (byte) (id % bits);
-                var mask = (byte) (1 << shift);
-                var flag = b & ~mask;
-                _allocatedId[index] = (byte)flag;
+                _allocatedId[id] = false;
                 _allocatedIdCount--;
             }
         }
@@ -68,11 +63,7 @@
         {
             lock (_idLock)
             {
-                var max = _allocatedId.Length;
-                for (var i = 0; i < max; i++)
-                {
-                    _allocatedId[i] = 0;
-                }
+                _allocatedId.SetAll(false);
 
                 _nextTryId = 0;
                 _allocatedIdCount = 0;
@@ -81,22 +72,12 @@
 
         private bool IsAllocated(int id)
         {
-            var index = id / bits;
-            var b = _allocatedId[index];
-            var shift = (byte) (id % bits);
-            var mask = (byte) (1 << shift);
-            var flag = b & mask;
-            return flag != 0;
+            return _allocatedId[id];
         }
 
         private void Allocate(int id)
         {
-            var index = id / bits;
-            var b = _allocatedId[index];
-            var shift = (byte) (id % bits);
-            var mask = (byte) (1 << shift);
-            var flag = b | mask;
-            _allocatedId[index] = (byte) flag;
+            _allocatedId[id] = true;
             _allocatedIdCount++;
         }
     }
