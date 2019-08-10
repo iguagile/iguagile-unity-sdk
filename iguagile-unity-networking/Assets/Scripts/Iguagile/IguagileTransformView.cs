@@ -6,6 +6,11 @@
 
         private bool _update;
 
+        void Awake()
+        {
+            View.TransformView = this;
+        }
+
         void Update()
         {
             if (View.IsMine)
