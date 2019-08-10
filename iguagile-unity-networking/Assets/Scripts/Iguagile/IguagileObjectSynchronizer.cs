@@ -11,7 +11,7 @@ namespace Iguagile
 
         static IguagileObjectSynchronizer()
         {
-            _timer = new Timer(100);
+            _timer = new Timer(30);
             _timer.Elapsed += TimerElapsed;
         }
 
