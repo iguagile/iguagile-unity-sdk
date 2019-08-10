@@ -48,14 +48,18 @@ namespace Iguagile
 
             var obj = GameObject.Instantiate(prefab);
             var view = obj.GetComponent<IguagileView>();
+            view.ObjectId = objectId;
             _syncObjects.Add(objectId, view);
 
             if (userId == IguagileUserManager.UserId)
             {
                 view.IsMine = true;
-                view.TransformView.NextTransform = new IguagileTransform(view.transform, objectId);
                 _mySyncObjects.Add(objectId, view);
-                UpdateSyncObjects();
+                if (view.TransformView != null)
+                {
+                    view.TransformView.NextTransform = new IguagileTransform(view.transform, objectId);
+                    UpdateSyncObjects();
+                }
             }
         }
 
@@ -92,7 +96,7 @@ namespace Iguagile
 
         internal static void UpdateSyncObjects()
         {
-            SyncTransforms = _mySyncObjects.Select(x => x.Value.TransformView.NextTransform).ToArray();
+            SyncTransforms = _mySyncObjects.Select(x => x.Value.TransformView?.NextTransform).ToArray();
         }
 
         internal static IguagileView GetView(int objectId)
