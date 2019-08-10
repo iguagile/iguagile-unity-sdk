@@ -24,7 +24,6 @@ namespace Iguagile
 
         internal static void Instantiate(int userId, byte[] data)
         {
-            Debug.Log(data.Length);
             var objectId = BitConverter.ToInt32(data, 0);
             var name = Encoding.UTF8.GetString(data, 4, data.Length - 4);
             IguagileDispatcher.BeginInvoke(() => IguagileObjectManager.Instantiate(userId, objectId, name));
