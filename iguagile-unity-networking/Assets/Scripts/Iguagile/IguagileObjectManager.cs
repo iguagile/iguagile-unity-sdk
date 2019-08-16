@@ -57,7 +57,7 @@ namespace Iguagile
                 _mySyncObjects.Add(objectId, view);
                 if (view.TransformView != null)
                 {
-                    view.TransformView.NextTransform = new IguagileTransform(view.transform, objectId);
+                    view.TransformView.SyncTransform = new IguagileTransform(view.transform, objectId);
                     UpdateSyncObjects();
                 }
             }
@@ -96,7 +96,7 @@ namespace Iguagile
 
         internal static void UpdateSyncObjects()
         {
-            SyncTransforms = _mySyncObjects.Select(x => x.Value.TransformView?.NextTransform).ToArray();
+            SyncTransforms = _mySyncObjects.Select(x => x.Value.TransformView?.SyncTransform).ToArray();
         }
 
         internal static IguagileView GetView(int objectId)

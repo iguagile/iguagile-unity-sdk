@@ -2,7 +2,7 @@
 {
     public class IguagileTransformView : IguagileBehaviour
     {
-        internal IguagileTransform NextTransform { get; set; }
+        internal IguagileTransform SyncTransform;
 
         private bool _update;
 
@@ -15,15 +15,14 @@
         {
             if (View.IsMine)
             {
-                NextTransform.Position = transform.position;
-                NextTransform.Rotation = transform.rotation;
+                SyncTransform.SetNext(transform);
             }
             else
             {
                 if (_update)
                 {
-                    transform.position = NextTransform.Position;
-                    transform.rotation = NextTransform.Rotation;
+                    transform.position = SyncTransform.NextPosition;
+                    transform.rotation = SyncTransform.NextRotation;
                     _update = false;
                 }
             }
@@ -31,7 +30,7 @@
 
         public void UpdateTransform(IguagileTransform iguagileTransform)
         {
-            NextTransform = iguagileTransform;
+            SyncTransform = iguagileTransform;
             _update = true;
         }
     }
