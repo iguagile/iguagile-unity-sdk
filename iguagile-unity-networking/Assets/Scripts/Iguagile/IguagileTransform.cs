@@ -30,16 +30,21 @@ namespace Iguagile
 
         public void SetNext(Transform transform)
         {
-            PreviousPosition = NextPosition;
-            PreviousRotation = NextRotation;
             NextPosition = transform.position;
             NextRotation = transform.rotation;
         }
 
         public bool IsMove(float thresholdPositionSquare, float thresholdRotation)
         {
-            return (NextPosition - PreviousPosition).sqrMagnitude > thresholdPositionSquare ||
-                   Quaternion.Angle(NextRotation, PreviousRotation) > thresholdRotation;
+            if ((NextPosition - PreviousPosition).sqrMagnitude > thresholdPositionSquare ||
+                Quaternion.Angle(NextRotation, PreviousRotation) > thresholdRotation)
+            {
+                PreviousPosition = NextPosition;
+                PreviousRotation = NextRotation;
+                return true;
+            }
+
+            return false;
         }
     }
 }
