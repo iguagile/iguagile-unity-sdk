@@ -61,6 +61,8 @@ namespace Iguagile
                     UpdateSyncObjects();
                 }
             }
+
+            IguagileEventManager.InvokeInstantiated(userId, view);
         }
 
         internal static void Destroy(int objectId)
