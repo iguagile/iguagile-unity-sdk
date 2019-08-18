@@ -34,13 +34,13 @@ namespace Iguagile
                 objects[j + 2] = idByte[1];
                 objects[j + 3] = idByte[2];
                 objects[j + 4] = idByte[3];
-                objects[j + 5] = transforms[i].Position.x;
-                objects[j + 6] = transforms[i].Position.y;
-                objects[j + 7] = transforms[i].Position.z;
-                objects[j + 8] = transforms[i].Rotation.x;
-                objects[j + 9] = transforms[i].Rotation.y;
-                objects[j + 10] = transforms[i].Rotation.z;
-                objects[j + 11] = transforms[i].Rotation.w;
+                objects[j + 5] = transforms[i].NextPosition.x;
+                objects[j + 6] = transforms[i].NextPosition.y;
+                objects[j + 7] = transforms[i].NextPosition.z;
+                objects[j + 8] = transforms[i].NextRotation.x;
+                objects[j + 9] = transforms[i].NextRotation.y;
+                objects[j + 10] = transforms[i].NextRotation.z;
+                objects[j + 11] = transforms[i].NextRotation.w;
             }
 
             return objects;

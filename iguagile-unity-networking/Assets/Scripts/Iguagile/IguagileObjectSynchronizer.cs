@@ -1,4 +1,6 @@
-﻿using System.Timers;
+﻿using System;
+using System.Linq;
+using System.Timers;
 
 namespace Iguagile
 {
@@ -9,9 +11,13 @@ namespace Iguagile
         public static double SyncInterval => _timer.Interval;
         public static bool EnableSyncObjects => _timer.Enabled;
 
+        public static bool EnableThreshold = true;
+        public static float ThresholdPositionSquare = 1e-6f;
+        public static float ThresholdRotation = 1f;
+
         static IguagileObjectSynchronizer()
         {
-            _timer = new Timer(30);
+            _timer = new Timer(20);
             _timer.Elapsed += TimerElapsed;
         }
 
@@ -25,9 +31,30 @@ namespace Iguagile
             _timer.Stop();
         }
 
+        public static void SetPositionThreshold(float threshold)
+        {
+            ThresholdPositionSquare = threshold * threshold;
+        }
+
+        public static void SetRotationThreshold(float threshold)
+        {
+            ThresholdRotation = threshold;
+        }
+
         private static void TimerElapsed(object sender, ElapsedEventArgs e)
         {
-            var data = IguagileTransformSerializer.Serialize(IguagileObjectManager.SyncTransforms);
+            var transforms = IguagileObjectManager.SyncTransforms;
+            if (EnableThreshold)
+            {
+                transforms = transforms.Where(x => x.IsMove(ThresholdPositionSquare, ThresholdRotation)).ToArray();
+            }
+            UnityEngine.Debug.Log(transforms.Length);
+            if (transforms.Length == 0)
+            {
+                return;
+            }
+
+            var data = IguagileTransformSerializer.Serialize(transforms);
             IguagileNetwork.Send(data);
         }
 
