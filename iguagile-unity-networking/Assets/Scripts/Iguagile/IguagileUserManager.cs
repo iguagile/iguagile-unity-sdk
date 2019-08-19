@@ -25,6 +25,7 @@ namespace Iguagile
         internal static void MigrateHost()
         {
             IsHost = true;
+            IguagileEventManager.InvokeReceivedHostAuthority();
         }
 
         internal static void Register(int id)
