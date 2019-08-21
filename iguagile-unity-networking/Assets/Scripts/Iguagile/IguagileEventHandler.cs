@@ -7,4 +7,5 @@ namespace Iguagile
     public delegate void InstantiatedEventHandler(int userId, IguagileView view);
     public delegate void MigrateHostEventHandler();
     public delegate void NewConnectionEventHandler(IguagileUser user);
+    public delegate void ExitConnectionEventHandler(int userID);
 }

@@ -21,6 +21,7 @@ namespace Iguagile
             if (_users.ContainsKey(userId))
             {
                 _users.Remove(userId);
+                IguagileEventManager.InvokeExitConnection(userId);
             }
         }
 
