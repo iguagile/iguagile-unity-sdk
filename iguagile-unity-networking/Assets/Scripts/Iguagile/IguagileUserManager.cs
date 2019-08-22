@@ -11,7 +11,9 @@ namespace Iguagile
         
         internal static void AddUser(int userId)
         {
-            _users[userId] = new IguagileUser(userId);
+            var user = new IguagileUser(userId);
+            _users[userId] = user;
+            IguagileEventManager.InvokeNewConnection(user);
         }
 
         internal static void RemoveUser(int userId)
@@ -19,6 +21,7 @@ namespace Iguagile
             if (_users.ContainsKey(userId))
             {
                 _users.Remove(userId);
+                IguagileEventManager.InvokeExitConnection(userId);
             }
         }
 
