@@ -38,6 +38,14 @@ namespace Iguagile
 
             Client.Open += Open;
             Client.Close += Close;
+            Client.Close += () =>
+            {
+                IguagileDispatcher.BeginInvoke(() =>
+                {
+                    GameObject.Destroy(IguagileDispatcher.Dispatcher.gameObject);
+                    IguagileDispatcher.Dispatcher = null;
+                });
+            };
             Client.Received += ClientReceived;
             Client.Connect(address, port);
             IguagileObjectSynchronizer.SyncStart();

@@ -2,7 +2,25 @@
 {
     public class IguagileTransformView : IguagileBehaviour
     {
-        internal IguagileTransform SyncTransform;
+        private IguagileTransform _syncTransform;
+
+        internal IguagileTransform SyncTransform
+        {
+            get
+            {
+                if (_syncTransform == null)
+                {
+                    _syncTransform = new IguagileTransform(transform, ObjectId);
+                }
+
+                return _syncTransform;
+            }
+
+            set
+            {
+                _syncTransform = value;
+            }
+        }
 
         private bool _update;
 
