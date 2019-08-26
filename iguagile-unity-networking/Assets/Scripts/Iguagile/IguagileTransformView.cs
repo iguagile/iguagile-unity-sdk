@@ -46,7 +46,7 @@
             }
         }
 
-        public void UpdateTransform(IguagileTransform iguagileTransform)
+        internal void UpdateTransform(IguagileTransform iguagileTransform)
         {
             SyncTransform = iguagileTransform;
             _update = true;

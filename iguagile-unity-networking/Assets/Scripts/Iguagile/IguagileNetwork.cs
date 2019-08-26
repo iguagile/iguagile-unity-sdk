@@ -85,7 +85,7 @@ namespace Iguagile
 
         private const int HeaderSize = 3;
 
-        internal static void ClientReceived(byte[] data)
+        private static void ClientReceived(byte[] data)
         {
             var id = BitConverter.ToUInt16(data, 0) << 16;
             var messageType = (MessageTypes) data[2];
