@@ -8,7 +8,7 @@ namespace Iguagile
         public bool IsMine { get; internal set; }
         public int ObjectId { get; internal set; } = -1;
 
-        public void UpdateTransform(IguagileTransform iguagileTransform)
+        internal void UpdateTransform(IguagileTransform iguagileTransform)
         {
             TransformView.UpdateTransform(iguagileTransform);
         }

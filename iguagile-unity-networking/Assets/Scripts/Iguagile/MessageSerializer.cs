@@ -5,7 +5,7 @@ namespace Iguagile
 {
     public static class MessageSerializer
     {
-        public static byte[] Serialize(RpcTargets target, MessageTypes messageType, params object[] message)
+        internal static byte[] Serialize(RpcTargets target, MessageTypes messageType, params object[] message)
         {
             var serialized = LZ4MessagePackSerializer.Serialize(message);
             var data = new byte[] {(byte) target, (byte) messageType};

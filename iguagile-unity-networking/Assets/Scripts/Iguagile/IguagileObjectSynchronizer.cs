@@ -10,10 +10,10 @@ namespace Iguagile
 
         public static double SyncInterval => _timer.Interval;
         public static bool EnableSyncObjects => _timer.Enabled;
-
         public static bool EnableThreshold = true;
-        public static float ThresholdPositionSquare = 1e-6f;
-        public static float ThresholdRotation = 1f;
+
+        private static float ThresholdPositionSquare = 1e-6f;
+        private static float ThresholdRotation = 1f;
 
         static IguagileObjectSynchronizer()
         {
