@@ -1,7 +1,7 @@
 ﻿using MessagePack;
 using System;
 using System.Linq;
-using System.Text;
+using UnityEngine;
 
 namespace Iguagile
 {
@@ -24,8 +24,11 @@ namespace Iguagile
         internal static void Instantiate(int userId, byte[] data)
         {
             var objectId = BitConverter.ToInt32(data, 0);
-            var name = Encoding.UTF8.GetString(data, 4, data.Length - 4);
-            IguagileDispatcher.BeginInvoke(() => IguagileObjectManager.Instantiate(userId, objectId, name));
+            var objects = LZ4MessagePackSerializer.Deserialize<object[]>(data.Skip(4).ToArray());
+            var path = (string)objects[0];
+            var position = new Vector3((float)objects[1], (float)objects[2], (float)objects[3]);
+            var rotation = new Quaternion((float)objects[4], (float)objects[5], (float)objects[6], (float)objects[7]);
+            IguagileDispatcher.BeginInvoke(() => IguagileObjectManager.Instantiate(userId, objectId, path, position, rotation));
         }
 
         internal static void Destroy(int userId, byte[] data)

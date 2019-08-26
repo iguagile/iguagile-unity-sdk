@@ -1,7 +1,7 @@
-﻿using System;
+﻿using MessagePack;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace Iguagile
@@ -22,12 +22,33 @@ namespace Iguagile
         {
             var id = _generator.Generate() | IguagileUserManager.UserId;
             var idByte = BitConverter.GetBytes(id);
-            var nameByte = Encoding.UTF8.GetBytes(name);
-            var data = new byte[] {(byte) RpcTargets.Server, (byte) MessageTypes.Instantiate};
-            data = data.Concat(idByte).Concat(new byte[]{(byte)ObjectLifetime.OwnerExist}).Concat(nameByte).ToArray();
+            var data = new byte[] { (byte)RpcTargets.Server, (byte)MessageTypes.Instantiate };
+            var transformByte = LZ4MessagePackSerializer.Serialize(new object[] { name, 0f, 0f, 0f, 0f, 0f, 0f, 0f });
+            data = data.Concat(idByte).Concat(new byte[] { (byte)ObjectLifetime.OwnerExist }).Concat(transformByte).ToArray();
             IguagileNetwork.Send(data);
         }
-        
+
+        public static void Instantiate(string name, Vector3 position, Quaternion rotation, ObjectLifetime lifetime)
+        {
+            var id = _generator.Generate() | IguagileUserManager.UserId;
+            var idByte = BitConverter.GetBytes(id);
+            var data = new byte[] { (byte)RpcTargets.Server, (byte)MessageTypes.Instantiate };
+            var transformByte = LZ4MessagePackSerializer.Serialize(new object[]
+                {name, position.x, position.y, position.z, rotation.x, rotation.y, rotation.z, rotation.w});
+            data = data.Concat(idByte).Concat(new byte[] { (byte)lifetime }).Concat(transformByte).ToArray();
+            IguagileNetwork.Send(data);
+        }
+
+        public static void Instantiate(string name, ObjectLifetime lifetime)
+        {
+            var id = _generator.Generate() | IguagileUserManager.UserId;
+            var idByte = BitConverter.GetBytes(id);
+            var data = new byte[] { (byte)RpcTargets.Server, (byte)MessageTypes.Instantiate };
+            var transformByte = LZ4MessagePackSerializer.Serialize(new object[] { name, 0f, 0f, 0f, 0f, 0f, 0f, 0f });
+            data = data.Concat(idByte).Concat(new byte[] { (byte)lifetime }).Concat(transformByte).ToArray();
+            IguagileNetwork.Send(data);
+        }
+
         public static void TransferObjectControlAuthority(int objectId)
         {
             if (_mySyncObjects.ContainsKey(objectId))
@@ -38,7 +59,7 @@ namespace Iguagile
             }
         }
 
-        internal static void Instantiate(int userId, int objectId, string name)
+        internal static void Instantiate(int userId, int objectId, string name, Vector3 position, Quaternion rotation)
         {
             var prefab = Resources.Load(name, typeof(GameObject)) as GameObject;
             if (prefab == null)
@@ -46,23 +67,26 @@ namespace Iguagile
                 return;
             }
 
-            var obj = GameObject.Instantiate(prefab);
+            var obj = GameObject.Instantiate(prefab, position, rotation);
             var view = obj.GetComponent<IguagileView>();
+            if (view == null)
+            {
+                view = obj.AddComponent<IguagileView>();
+            }
             view.ObjectId = objectId;
             _syncObjects.Add(objectId, view);
+            view.TransformView = view.GetComponent<IguagileTransformView>();
 
             if (userId == IguagileUserManager.UserId)
             {
                 view.IsMine = true;
-                _mySyncObjects.Add(objectId, view);
                 if (view.TransformView != null)
                 {
+                    _mySyncObjects.Add(objectId, view);
                     view.TransformView.SyncTransform = new IguagileTransform(view.transform, objectId);
                     UpdateSyncObjects();
                 }
             }
-
-            IguagileEventManager.InvokeInstantiated(userId, view);
         }
 
         internal static void Destroy(int objectId)
