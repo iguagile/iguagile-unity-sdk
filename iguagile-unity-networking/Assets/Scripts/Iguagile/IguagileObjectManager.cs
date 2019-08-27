@@ -120,7 +120,7 @@ namespace Iguagile
             UpdateSyncObjects();
         }
 
-        internal static void UpdateSyncObjects()
+        private static void UpdateSyncObjects()
         {
             SyncTransforms = _mySyncObjects.Select(x => x.Value.TransformView?.SyncTransform).ToArray();
         }
