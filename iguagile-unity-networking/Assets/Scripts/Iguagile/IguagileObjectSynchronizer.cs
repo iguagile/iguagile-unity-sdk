@@ -48,7 +48,7 @@ namespace Iguagile
             {
                 transforms = transforms.Where(x => x.IsMove(ThresholdPositionSquare, ThresholdRotation)).ToArray();
             }
-            UnityEngine.Debug.Log(transforms.Length);
+
             if (transforms.Length == 0)
             {
                 return;
