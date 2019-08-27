@@ -140,7 +140,7 @@ namespace Iguagile
             _mySyncObjects.Clear();
             foreach (var syncObject in _syncObjects)
             {
-                Destroy(syncObject.Key);
+                GameObject.Destroy(syncObject.Value.gameObject);
             }
 
             _syncObjects.Clear();
