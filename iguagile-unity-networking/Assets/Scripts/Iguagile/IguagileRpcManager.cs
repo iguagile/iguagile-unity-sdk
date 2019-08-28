@@ -64,7 +64,7 @@ namespace Iguagile
 
             var behaviour = _rpcMethods[methodName];
             var type = behaviour.GetType();
-            var flag = BindingFlags.InvokeMethod | BindingFlags.NonPublic | BindingFlags.Instance;
+            var flag = BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
             var method = type.GetMethod(methodName, flag);
             method?.Invoke(behaviour, args);
         }
