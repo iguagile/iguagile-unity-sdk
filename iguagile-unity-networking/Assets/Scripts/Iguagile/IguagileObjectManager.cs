@@ -59,6 +59,14 @@ namespace Iguagile
             }
         }
 
+        public static void Destroy(IguagileBehaviour gameObject)
+        {
+            var idByte = BitConverter.GetBytes(gameObject.ObjectId);
+            var data = new byte[] { (byte)RpcTargets.Server, (byte)MessageTypes.Destroy };
+            data = data.Concat(idByte).ToArray();
+            IguagileNetwork.Send(data);
+        }
+
         internal static void Instantiate(int userId, int objectId, string name, Vector3 position, Quaternion rotation)
         {
             var prefab = Resources.Load(name, typeof(GameObject)) as GameObject;
