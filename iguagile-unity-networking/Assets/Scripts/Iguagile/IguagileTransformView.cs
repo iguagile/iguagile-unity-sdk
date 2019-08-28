@@ -1,4 +1,6 @@
-﻿namespace Iguagile
+﻿using UnityEngine;
+
+namespace Iguagile
 {
     public class IguagileTransformView : IguagileBehaviour
     {
@@ -10,7 +12,7 @@
             {
                 if (_syncTransform == null)
                 {
-                    _syncTransform = new IguagileTransform(transform, ObjectId);
+                    _syncTransform = new IguagileTransform(Vector3.zero, Quaternion.identity, ObjectId);
                 }
 
                 return _syncTransform;
