@@ -20,7 +20,12 @@ namespace Iguagile
         /// <param name="name">resource name</param>
         public static void Instantiate(string name)
         {
-            var id = _generator.Generate() | IguagileUserManager.UserId;
+            var id = _generator.Generate();
+            if (id < 0)
+            {
+                return;
+            }
+            id = id | IguagileUserManager.UserId;
             var idByte = BitConverter.GetBytes(id);
             var data = new byte[] { (byte)RpcTargets.Server, (byte)MessageTypes.Instantiate };
             var transformByte = LZ4MessagePackSerializer.Serialize(new object[] { name, 0f, 0f, 0f, 0f, 0f, 0f, 0f });
@@ -30,7 +35,12 @@ namespace Iguagile
 
         public static void Instantiate(string name, Vector3 position, Quaternion rotation, ObjectLifetime lifetime)
         {
-            var id = _generator.Generate() | IguagileUserManager.UserId;
+            var id = _generator.Generate();
+            if (id < 0)
+            {
+                return;
+            }
+            id = id | IguagileUserManager.UserId;
             var idByte = BitConverter.GetBytes(id);
             var data = new byte[] { (byte)RpcTargets.Server, (byte)MessageTypes.Instantiate };
             var transformByte = LZ4MessagePackSerializer.Serialize(new object[]
@@ -41,7 +51,12 @@ namespace Iguagile
 
         public static void Instantiate(string name, ObjectLifetime lifetime)
         {
-            var id = _generator.Generate() | IguagileUserManager.UserId;
+            var id = _generator.Generate();
+            if (id < 0)
+            {
+                return;
+            }
+            id = id | IguagileUserManager.UserId;
             var idByte = BitConverter.GetBytes(id);
             var data = new byte[] { (byte)RpcTargets.Server, (byte)MessageTypes.Instantiate };
             var transformByte = LZ4MessagePackSerializer.Serialize(new object[] { name, 0f, 0f, 0f, 0f, 0f, 0f, 0f });
