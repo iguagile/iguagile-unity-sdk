@@ -44,7 +44,7 @@ namespace Iguagile
 
         internal static void TransferObjectControlAuthority(int userId, byte[] data)
         {
-            var objectId = (int) LZ4MessagePackSerializer.Deserialize<object[]>(data)[0];
+            var objectId = BitConverter.ToInt32(data, 0);
             IguagileObjectManager.ReceiveObjectControlAuthority(objectId);
         }
 
