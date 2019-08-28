@@ -112,6 +112,11 @@ namespace Iguagile
                 _mySyncObjects.Remove(objectId);
             }
 
+            if ((objectId & 0xFFFF0000) == IguagileUserManager.UserId)
+            {
+                _generator.Free(objectId & 0xFFFF);
+            }
+
             GameObject.Destroy(view.gameObject);
         }
 
