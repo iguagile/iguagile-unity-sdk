@@ -14,7 +14,7 @@ namespace Iguagile
         {
             while (_queue.Count > 0)
             {
-                _queue.Dequeue()();
+                _queue.Dequeue()?.Invoke();
             }
         }
 
