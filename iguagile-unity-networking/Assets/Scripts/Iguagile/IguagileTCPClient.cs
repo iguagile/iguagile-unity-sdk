@@ -31,8 +31,9 @@ namespace Iguagile
                     var message = new byte[0];
                     while (readSum < size)
                     {
-                        readSum += stream.Read(buf, 0, size);
-                        message = message.Concat(buf).ToArray();
+                        var readSize = stream.Read(buf, 0, size-readSum);
+                        message = message.Concat(buf.Take(readSize)).ToArray();
+                        readSum += readSize;
                     }
                     Received?.Invoke(message);
                 }
